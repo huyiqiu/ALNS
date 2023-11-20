@@ -23,13 +23,13 @@ func main() {
 	nodes := common.ReadTsp(filepath)
 	common.GenerateDistMatrix(nodes, coor)
 	algorithms.Register()
-	algorithmsRunTimes := 1
+	algorithmsRunTimes := 5
 	run(algorithmsRunTimes)
 }
 
-func run(times int) float64 {
+func run(times int) {
 	var wg sync.WaitGroup
-	resultChan := make(chan float64)
+	var result sync.Map
 	// 算法开始时间
 	startTime := time.Now()
 	for i := 0; i < times; i ++ {
@@ -39,26 +39,26 @@ func run(times int) float64 {
 			randDestroyNum := 0.3 * float64(len(common.DistMatrix))
 			alns := alns.NewALNS(int(randDestroyNum), 1000, sa.NewSA(50000.0, 0.98))
 			alns.Run()
-			resultChan <- alns.HistoricallyBest
+			result.Store(i, alns.BestPath)
 			for k, v := range alns.OperatorUsageTimes {
 				fmt.Println(k, ":", v)
 			}
 			fmt.Println("线程:", i, "最优解:", alns.HistoricallyBest, "最优路径:", alns.BestPath)
 		}(i)
 	}
-	go func() {
-		wg.Wait()
-		close(resultChan)
-	}()
-	best := math.MaxFloat64
-	for result := range resultChan {
-		if result < best {
-			best = result
+	wg.Wait()
+	bestvalue := math.MaxFloat64
+	var bestpath []int
+	result.Range(func(key, value interface{}) bool {
+		if common.CalcTSP(value.([]int)) < bestvalue {
+			bestpath = value.([]int)
+			bestvalue = common.CalcTSP(value.([]int))
 		}
-	}
+		return true
+	})
 	endTime := time.Now()
 	elapsedTime := endTime.Sub(startTime)
-	fmt.Println("best:", best)
+	fmt.Println("best:", bestvalue)
+	fmt.Println("best path:", bestpath)
 	fmt.Println("算法执行时间:", elapsedTime)
-	return best
 }
