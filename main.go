@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"math"
 	"sync"
@@ -13,9 +14,14 @@ import (
 )
 
 func main() {
-	nodes := common.ReadTsp("./benchmark/xqf131.tsp")
-	// nodes := common.ReadTsp("./benchmark/china34.tsp")
-	common.GenerateDistMatrix(nodes, constant.EUC)
+	var filepath string
+	var coor string
+	flag.StringVar(&filepath, "filepath", "./benchmark/xqf131.tsp", "指定tsp文件路径")
+	flag.StringVar(&coor, "coor", constant.EUC, "指定坐标系")
+	flag.Parse()
+
+	nodes := common.ReadTsp(filepath)
+	common.GenerateDistMatrix(nodes, coor)
 	algorithms.Register()
 	algorithmsRunTimes := 1
 	run(algorithmsRunTimes)

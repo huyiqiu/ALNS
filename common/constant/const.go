@@ -5,5 +5,5 @@ const (
 	InitSolutionByGreedy = "greedy"
 	InitSolutionByRandom = "random"
 	WGS = "WGS"
-	EUC = "Euclidean_2D"
+	EUC = "EUC"
 )
