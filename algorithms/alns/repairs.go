@@ -88,7 +88,7 @@ func GreedyInsert(node int, path []int) []int {
 
 func RegisterRepair() {
 	RepairMap = make(map[string]Repair)
-	// RepairMap["random_repair"] = Repair{Name: "random_repair", Func: RandomRepair}
+	RepairMap["random_repair"] = Repair{Name: "random_repair", Func: RandomRepair}
 	RepairMap["greedy_repair"] = Repair{Name: "greedy_repair", Func: GreedyRepair}
-	// RepairMap["greedy_repair2"] = Repair{Name: "greedy_repair2", Func: GreedyRepair2}
+	RepairMap["greedy_repair2"] = Repair{Name: "greedy_repair2", Func: GreedyRepair2}
 }
